@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+</head>
+<body>
+    <h1>用户注册</h1>
+    <form action="/user/register" method="post">
+        <div>
+            用户名：<input type="text" name="username" required>
+        </div>
+        <div>
+            密码：<input type="password" name="password" required>
+        </div>
+        <div>
+            年龄：<input type="number" name="age" required min="1" max="120">
+        </div>
+        <div>
+            <button type="submit">注册</button>
+        </div>
+    </form>
+    <br>
+    <a href="/index.html">返回登录</a>
+</body>
+</html> 

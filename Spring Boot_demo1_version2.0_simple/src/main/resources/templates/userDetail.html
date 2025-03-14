@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户详情</title>
+</head>
+<body>
+    <h1>用户详情</h1>
+    
+    <div th:if="${message}" th:text="${message}"></div>
+    
+    <div th:if="${user != null}">
+        <table border="1">
+            <tr>
+                <td>用户ID：</td>
+                <td th:text="${user.id}"></td>
+            </tr>
+            <tr>
+                <td>用户名：</td>
+                <td th:text="${user.name}"></td>
+            </tr>
+            <tr>
+                <td>年龄：</td>
+                <td th:text="${user.age}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <br>
+    <a href="/food/list">返回菜品列表</a>
+</body>
+</html> 

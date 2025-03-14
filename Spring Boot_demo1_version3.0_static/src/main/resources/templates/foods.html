@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>所有菜品</title>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <span class="nav-item">当前用户：<a th:href="@{/user/detail(name=${currentUser})}" th:text="${currentUser}"></a></span>
+            <form action="/user/search" method="get" class="search-box">
+                <input type="text" name="searchName" placeholder="输入用户名搜索" class="search-input">
+                <button type="submit" class="btn btn-primary">搜索</button>
+                <a href="/user/listAll" class="btn btn-secondary">查询所有用户</a>
+            </form>
+        </div>
+        
+        <!-- 购物车 -->
+        <div class="cart">
+            <div class="cart-title">
+                购物车 <span th:text="${'共 ' + (cart != null ? cart.size() : 0) + ' 项'}"></span>
+            </div>
+            <div class="cart-items">
+                <div th:each="item : ${cart}" class="cart-item">
+                    <span th:text="${item.name}"></span>
+                    <div class="quantity-control">
+                        <button class="btn btn-secondary" th:data-name="${item.name}" data-change="-1">-</button>
+                        <span th:text="${item.quantity}"></span>
+                        <button class="btn btn-secondary" th:data-name="${item.name}" data-change="1">+</button>
+                        <span th:data-name="${item.name}" class="remove-from-cart" style="cursor: pointer; color: #f56c6c; margin-left: 10px;">×</span>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-total">
+                总计: ¥<span th:text="${cartTotal != null ? cartTotal : '0.00'}"></span>
+            </div>
+            <button class="btn btn-primary checkout-btn" style="width: 100%; margin-top: 10px;">结算</button>
+        </div>
+
+        <div class="content">
+            <h1>所有菜品</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>菜品名称</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="foodName, stat : ${food}">
+                        <td th:text="${stat.count}"></td>
+                        <td>
+                            <a th:href="@{/food/detail(name=${foodName})}" th:text="${foodName}"></a>
+                        </td>
+                        <td>
+                            <button class="btn btn-secondary" th:data-name="${foodName}">加入购物车</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 添加到购物车
+        document.querySelectorAll('button[data-name]').forEach(button => {
+            if (!button.hasAttribute('data-change')) {
+                button.addEventListener('click', function() {
+                    const foodName = this.getAttribute('data-name');
+                    addToCart(foodName);
+                });
+            }
+        });
+
+        // 从购物车移除
+        document.querySelectorAll('.remove-from-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const foodName = this.getAttribute('data-name');
+                removeFromCart(foodName);
+            });
+        });
+
+        // 更新数量
+        document.querySelectorAll('button[data-change]').forEach(button => {
+            button.addEventListener('click', function() {
+                const foodName = this.getAttribute('data-name');
+                const change = parseInt(this.getAttribute('data-change'));
+                updateQuantity(foodName, change);
+            });
+        });
+
+        // 结算
+        document.querySelector('.checkout-btn').addEventListener('click', checkout);
+
+        function addToCart(foodName) {
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: foodName })
+            }).then(response => response.json())
+              .then(data => {
+                  if(data.success) {
+                      location.reload();
+                  }
+              });
+        }
+
+        function removeFromCart(foodName) {
+            fetch('/cart/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: foodName })
+            }).then(response => response.json())
+              .then(data => {
+                  if(data.success) {
+                      location.reload();
+                  }
+              });
+        }
+
+        function updateQuantity(foodName, change) {
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    name: foodName,
+                    change: change 
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  if(data.success) {
+                      location.reload();
+                  }
+              });
+        }
+
+        function checkout() {
+            fetch('/cart/checkout', {
+                method: 'POST'
+            }).then(response => response.json())
+              .then(data => {
+                  if(data.success) {
+                      alert('结算成功！');
+                      location.reload();
+                  }
+              });
+        }
+    </script>
+</body>
+</html>
