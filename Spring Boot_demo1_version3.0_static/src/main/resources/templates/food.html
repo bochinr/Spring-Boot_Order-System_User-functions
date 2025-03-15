@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <title>菜品详情</title>
     <link rel="stylesheet" href="/css/common.css">
 </head>
-<a href="#">hello</a>
-
 <body>
     <div class="container">
         <h1 th:text="${food.name}"></h1>
-
+        
         <div class="food-info">
             <div class="food-description">
                 <h3>菜品描述</h3>
                 <p th:text="${food.description}"></p>
             </div>
-
+            
             <div class="food-price">
                 <h3>价格</h3>
                 <p class="price-value" th:text="${food.price + '元'}"></p>
@@ -30,7 +27,7 @@
     </div>
 
     <script>
-        document.querySelector('button[data-name]').addEventListener('click', function () {
+        document.querySelector('button[data-name]').addEventListener('click', function() {
             const foodName = this.getAttribute('data-name');
             addToCart(foodName);
         });
@@ -43,12 +40,12 @@
                 },
                 body: JSON.stringify({ name: foodName })
             }).then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('已添加到购物车！');
-                        window.location.href = '/food/list';
-                    }
-                });
+              .then(data => {
+                  if(data.success) {
+                      alert('已添加到购物车！');
+                      window.location.href = '/food/list';
+                  }
+              });
         }
     </script>
 
@@ -59,18 +56,16 @@
             padding: 20px;
             margin: 20px 0;
         }
-
-        .food-description,
-        .food-price {
+        
+        .food-description, .food-price {
             margin: 15px 0;
         }
-
-        .food-description h3,
-        .food-price h3 {
+        
+        .food-description h3, .food-price h3 {
             color: #2c3e50;
             margin-bottom: 10px;
         }
-
+        
         .price-value {
             color: #f56c6c;
             font-size: 24px;
@@ -78,5 +73,4 @@
         }
     </style>
 </body>
-
 </html>
